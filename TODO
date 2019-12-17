@@ -4,3 +4,4 @@ Save settings to .map files.
 Read weapon data from .map files to support custom .map files.
 Autosave to config file.
 Select presets (default, H2A, DOOM, etc)
+Use mouse instead of sliders (thanks Limited)
