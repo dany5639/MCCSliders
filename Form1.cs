@@ -66,7 +66,6 @@ namespace MCCSliders
                 return;
             }
 
-
             UpdateAllWeapons();
 
         }
@@ -95,6 +94,14 @@ namespace MCCSliders
             }
 
             var BaseModuleAddress = ProcessModuleMemoryStream(process);
+            if (BaseModuleAddress == -1)
+            {
+                Log($"FATAL ERROR: You cannot use mods in MCC matchmaking with EAC enabled. \n" +
+                    $"To use this tool in custom games, run MCC trough steam and select MCC Anti-Cheat Disabled." +
+                    $"This tool can only be used while playing Halo Reach, not in MCC's menu.");
+                return false;
+            }
+
             var magic = 0x0000000180000000;
             var pointer = 0x0000000182607790;
             var MemMagicOffset = 0xA0A0;
@@ -112,6 +119,12 @@ namespace MCCSliders
             }
 
             var point2 = BitConverter.ToInt64(ReadMem(process, point1), 0); // read from memory
+            if (point2 == 0)
+            {
+                Log("ERROR: game is not running or EAC is enabled or player is in the menu. " +
+                    "Relaunch the game trough Steam and disable EAC to play with mods on custom games.");
+                return false;
+            }
             var point3 = point2 + MemMagicOffset;
             metaMagic = BitConverter.ToInt64(ReadMem(process, point3), 0); // read from memory
 
@@ -136,6 +149,16 @@ namespace MCCSliders
             var _process = process;
             ProcessModule _processModule = null;
 
+            try
+            {
+                foreach (ProcessModule m in process.Modules)
+                    ;
+            }
+            catch
+            {
+                return -1;
+            }
+
             foreach (ProcessModule m in process.Modules)
                 if (Path.GetFileNameWithoutExtension(m.FileName) == "haloreach")
                     _processModule = m;
@@ -151,8 +174,7 @@ namespace MCCSliders
             if (!File.Exists(presetsFile))
             {
                 Log($"ERROR: settings file does not exist: {presetsFile}.\n" +
-                    $"Extract the provided presets file and place it in the same folder as this executable/app." +
-                    $"Do not run this app from the archive without extracting.");
+                    $"Extract the provided presets file and place it in the same folder as this executable/app.");
 
                 return false;
             }
@@ -466,8 +488,14 @@ namespace MCCSliders
 
             return ex;
         }
+
+        private void Timer1_Tick(object sender, EventArgs e)
+        {
+            if(checkBox_auto_apply.Checked)
+                Button_reset_Click(null, null);
+        }
         #endregion
-     
+
         /*
          * TODO
          * 

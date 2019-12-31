@@ -31,9 +31,9 @@ namespace MCCSliders
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.textBox_X = new System.Windows.Forms.TextBox();
             this.trackBar_X = new System.Windows.Forms.TrackBar();
-            this.textBox6 = new System.Windows.Forms.TextBox();
             this.textBox_Y = new System.Windows.Forms.TextBox();
             this.trackBar_Y = new System.Windows.Forms.TrackBar();
             this.textBox_Z = new System.Windows.Forms.TextBox();
@@ -44,6 +44,8 @@ namespace MCCSliders
             this.button2 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
             this.button4 = new System.Windows.Forms.Button();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.checkBox_auto_apply = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar_X)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar_Y)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar_Z)).BeginInit();
@@ -66,15 +68,6 @@ namespace MCCSliders
             this.trackBar_X.Size = new System.Drawing.Size(762, 45);
             this.trackBar_X.TabIndex = 4;
             this.trackBar_X.Scroll += new System.EventHandler(this.trackBar_X_Scroll);
-            // 
-            // textBox6
-            // 
-            this.textBox6.Location = new System.Drawing.Point(12, 296);
-            this.textBox6.MaxLength = 8;
-            this.textBox6.Name = "textBox6";
-            this.textBox6.Size = new System.Drawing.Size(111, 20);
-            this.textBox6.TabIndex = 11;
-            this.textBox6.Text = "00007FF4082B879C";
             // 
             // textBox_Y
             // 
@@ -115,7 +108,7 @@ namespace MCCSliders
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(12, 322);
+            this.button1.Location = new System.Drawing.Point(12, 296);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(75, 23);
             this.button1.TabIndex = 17;
@@ -143,7 +136,7 @@ namespace MCCSliders
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(776, 322);
+            this.button2.Location = new System.Drawing.Point(776, 296);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(75, 23);
             this.button2.TabIndex = 20;
@@ -153,7 +146,7 @@ namespace MCCSliders
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(93, 322);
+            this.button3.Location = new System.Drawing.Point(93, 296);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(75, 23);
             this.button3.TabIndex = 21;
@@ -163,7 +156,7 @@ namespace MCCSliders
             // 
             // button4
             // 
-            this.button4.Location = new System.Drawing.Point(695, 322);
+            this.button4.Location = new System.Drawing.Point(695, 296);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(75, 23);
             this.button4.TabIndex = 22;
@@ -171,11 +164,28 @@ namespace MCCSliders
             this.button4.UseVisualStyleBackColor = true;
             this.button4.Click += new System.EventHandler(this.Button_applyToAll_Click);
             // 
+            // timer1
+            // 
+            this.timer1.Enabled = true;
+            this.timer1.Interval = 5000;
+            this.timer1.Tick += new System.EventHandler(this.Timer1_Tick);
+            // 
+            // checkBox_auto_apply
+            // 
+            this.checkBox_auto_apply.AutoSize = true;
+            this.checkBox_auto_apply.Location = new System.Drawing.Point(12, 325);
+            this.checkBox_auto_apply.Name = "checkBox_auto_apply";
+            this.checkBox_auto_apply.Size = new System.Drawing.Size(76, 17);
+            this.checkBox_auto_apply.TabIndex = 23;
+            this.checkBox_auto_apply.Text = "Auto apply";
+            this.checkBox_auto_apply.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(863, 413);
+            this.Controls.Add(this.checkBox_auto_apply);
             this.Controls.Add(this.button4);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.button2);
@@ -186,7 +196,6 @@ namespace MCCSliders
             this.Controls.Add(this.trackBar_Z);
             this.Controls.Add(this.textBox_Y);
             this.Controls.Add(this.trackBar_Y);
-            this.Controls.Add(this.textBox6);
             this.Controls.Add(this.textBox_X);
             this.Controls.Add(this.trackBar_X);
             this.Name = "Form1";
@@ -202,7 +211,6 @@ namespace MCCSliders
 
         private System.Windows.Forms.TrackBar trackBar_X;
         private System.Windows.Forms.TextBox textBox_X;
-        private System.Windows.Forms.TextBox textBox6;
         private System.Windows.Forms.TextBox textBox_Y;
         private System.Windows.Forms.TrackBar trackBar_Y;
         private System.Windows.Forms.TextBox textBox_Z;
@@ -213,6 +221,8 @@ namespace MCCSliders
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Button button4;
+        private System.Windows.Forms.Timer timer1;
+        private System.Windows.Forms.CheckBox checkBox_auto_apply;
     }
 }
 
