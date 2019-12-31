@@ -44,6 +44,7 @@ namespace MCCSliders
         {
             InitializeComponent();
             Button_reset_Click(null, null);
+            checkBox_auto_apply.Checked = true;
         }
         private void Button_reset_Click(object sender, EventArgs e)
         {
