@@ -104,7 +104,7 @@ namespace MCCSliders
             }
 
             var magic = 0x0000000180000000;
-            var pointer = 0x0000000182607790;
+            var pointer = 0x1825B6D80; // mcc reach v1.1305.0.0, from xboxchaos/assembly
             var MemMagicOffset = 0xA0A0;
             var _moduleaddress = BaseModuleAddress; // -magic was already done
             var point1 = _moduleaddress + pointer;
