@@ -25,7 +25,10 @@ namespace MCCSliders
         public int multiplier = 1000;
         public long metaMagic = 0;
         public Dictionary<int, item> items;
-        public Dictionary<int, int> itemsConversion = new Dictionary<int, int>(); 
+        public Dictionary<int, int> itemsConversion = new Dictionary<int, int>();
+        private long pointer = 0x1825B6D80; // mcc reach v1.1305.0.0, from xboxchaos/assembly
+        private int previousSelectedWeaponIndex = -1;
+
         // keep a conversion dictionary between combobox and weapons list
         // key is combobox index
         // value is weapons list item ID
@@ -51,7 +54,7 @@ namespace MCCSliders
             richTextBox1.Text = "";
             if (!UpdateProcess()) // check if process is available
                 return;
-            
+
             if (!GetInfo()) // read some info to get tags and map name
                 return;
 
@@ -104,7 +107,6 @@ namespace MCCSliders
             }
 
             var magic = 0x0000000180000000;
-            var pointer = 0x1825B6D80; // mcc reach v1.1305.0.0, from xboxchaos/assembly
             var MemMagicOffset = 0xA0A0;
             var _moduleaddress = BaseModuleAddress; // -magic was already done
             var point1 = _moduleaddress + pointer;
@@ -190,7 +192,7 @@ namespace MCCSliders
 
                 if (b.Length < 3)
                 {
-                    Log($"ERROR: failed to parse settings at line {i+1} for {presetsFile}.\n" +
+                    Log($"ERROR: failed to parse settings at line {i + 1} for {presetsFile}.\n" +
                         $"Expected format: mapname, tagname, tag offset, X, Y, Z (the last 3 values can be ignored)");
                     return false;
                 }
@@ -242,7 +244,8 @@ namespace MCCSliders
                 return false;
             }
 
-            comboBox1.SelectedIndex = 0;
+            if (previousSelectedWeaponIndex == -1 || previousSelectedWeaponIndex > comboBox1.Items.Count)
+                comboBox1.SelectedIndex = 0;
 
             return true;
         }
@@ -271,7 +274,7 @@ namespace MCCSliders
             var weap = items[itemsConversion[a]];
 
             taginstanceOffset = weap.offset;
-            switch(wat) // this is really unnecessarily bad
+            switch (wat) // this is really unnecessarily bad
             {
                 case 0:
                     weap.X = (float)trackBar.Value / multiplier;
@@ -285,6 +288,9 @@ namespace MCCSliders
             }
 
             WriteMem(process, metaMagic + taginstanceOffset + firstPersonWeaponOffset + wat * 4, BitConverter.GetBytes((float)trackBar.Value / multiplier));
+
+            if (checkBox1.Checked)
+                Button_applyToAll_Click(null, null); // WARNING already poked above
 
         }
         private void trackBar_X_Scroll(object sender, System.EventArgs e)
@@ -304,7 +310,7 @@ namespace MCCSliders
             var newItems = new List<string>();
 
             foreach (var a in items)
-            { 
+            {
                 var b = a.Value;
                 var d = $"{b.mapname},{b.tagname},{((a.Value.offset - 0x50000000) / 4):X8},{b.X},{b.Y},{b.Z}";
                 newItems.Add(d);
@@ -315,6 +321,8 @@ namespace MCCSliders
         private void ComboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
             var weap = items[itemsConversion[comboBox1.SelectedIndex]];
+
+            previousSelectedWeaponIndex = comboBox1.SelectedIndex;
 
             taginstanceOffset = weap.offset;
 
@@ -334,7 +342,7 @@ namespace MCCSliders
         }
         private void RichTextBox1_TextChanged(object sender, EventArgs e)
         {
-            richTextBox1.SelectionStart = richTextBox1.Text.Length; 
+            richTextBox1.SelectionStart = richTextBox1.Text.Length;
             richTextBox1.ScrollToCaret();
         }
         private void Button_zeroAll_Click(object sender, EventArgs e)
@@ -373,7 +381,7 @@ namespace MCCSliders
             }
         }
 
-        #region Memory editing utilities
+        #region Memory editing utilities; from https://codingvision.net/security/c-read-write-another-process-memory
         const int PROCESS_VM_WRITE = 0x0020;
         const int PROCESS_VM_OPERATION = 0x0008;
 
@@ -403,7 +411,6 @@ namespace MCCSliders
             QueryInformation = 0x00000400,
             Synchronize = 0x00100000
         }
-
         public static void WriteMem(Process p, long address, byte[] val)
         {
             var hProc = OpenProcess(ProcessAccessFlags.All, false, (int)p.Id);
@@ -454,7 +461,7 @@ namespace MCCSliders
         }
         public void Log(string in_)
         {
-            richTextBox1.Text = richTextBox1.Text + $"\n{in_}";
+            richTextBox1.Text = $"{richTextBox1.Text}{in_}\n";
         }
         private static List<string> ReadCsv(string filename)
         {
@@ -489,23 +496,22 @@ namespace MCCSliders
 
             return ex;
         }
-
         private void Timer1_Tick(object sender, EventArgs e)
         {
-            if(checkBox_auto_apply.Checked)
-                Button_reset_Click(null, null);
+            if (checkBox_auto_apply.Checked)
+            {
+                Button_reset_Click(null, null); // excessively slow and inefficient
+                if (previousSelectedWeaponIndex != -1)
+                    comboBox1.SelectedIndex = previousSelectedWeaponIndex;
+            }
         }
+
         #endregion
 
-        /*
-         * TODO
-         * 
-         * Verify every 5 seconds to apply changes in memory, so the user doesn't need to press the reload button every time.
-         * Save changes to .map.
-         * Read tags list from memory instead to work with modded .map files and future tag updates.
-         * Lock weapons to prevent global override
-         * 
-         */
+        private void TrackBar_X_MouseUp(object sender, MouseEventArgs e)
+        {
+            Button_writeToFile_Click(null, null); // current auto reload is severely flawed. Save the current config to file, to prevent being reset with the timed reload.
+        }
 
     }
 }

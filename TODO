@@ -1,7 +1,8 @@
 Todo: 
-Auto inject modified weapons data in memory regularly to avoid using the button each match.
 Save settings to .map files.
 Read weapon data from .map files to support custom .map files.
-Autosave to config file.
 Select presets (default, H2A, DOOM, etc)
 Use mouse instead of sliders (thanks Limited)
+Optimize map detection.
+Include a default settings file in the exe.
+Cleanup code.
