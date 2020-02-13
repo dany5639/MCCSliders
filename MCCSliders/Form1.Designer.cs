@@ -78,6 +78,7 @@ namespace MCCSliders
             this.trackBar_Y.Size = new System.Drawing.Size(734, 45);
             this.trackBar_Y.TabIndex = 14;
             this.trackBar_Y.Scroll += new System.EventHandler(this.trackBar_Y_Scroll);
+            this.trackBar_Y.MouseUp += new System.Windows.Forms.MouseEventHandler(this.TrackBar_Y_MouseUp);
             // 
             // trackBar_Z
             // 
@@ -91,6 +92,7 @@ namespace MCCSliders
             this.trackBar_Z.Size = new System.Drawing.Size(734, 45);
             this.trackBar_Z.TabIndex = 16;
             this.trackBar_Z.Scroll += new System.EventHandler(this.trackBar_Z_Scroll);
+            this.trackBar_Z.MouseUp += new System.Windows.Forms.MouseEventHandler(this.TrackBar_Z_MouseUp);
             // 
             // button1
             // 

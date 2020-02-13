@@ -513,5 +513,16 @@ namespace MCCSliders
             Button_writeToFile_Click(null, null); // current auto reload is severely flawed. Save the current config to file, to prevent being reset with the timed reload.
         }
 
+        private void TrackBar_Y_MouseUp(object sender, MouseEventArgs e)
+        {
+            Button_writeToFile_Click(null, null); // current auto reload is severely flawed. Save the current config to file, to prevent being reset with the timed reload.
+
+        }
+
+        private void TrackBar_Z_MouseUp(object sender, MouseEventArgs e)
+        {
+            Button_writeToFile_Click(null, null); // current auto reload is severely flawed. Save the current config to file, to prevent being reset with the timed reload.
+
+        }
     }
 }
