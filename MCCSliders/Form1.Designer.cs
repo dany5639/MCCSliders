@@ -63,6 +63,7 @@ namespace MCCSliders
             this.trackBar_X.Size = new System.Drawing.Size(734, 45);
             this.trackBar_X.TabIndex = 4;
             this.trackBar_X.Scroll += new System.EventHandler(this.trackBar_X_Scroll);
+            this.trackBar_X.MouseHover += new System.EventHandler(this.TrackBar_X_MouseHover);
             this.trackBar_X.MouseUp += new System.Windows.Forms.MouseEventHandler(this.TrackBar_X_MouseUp);
             // 
             // trackBar_Y

@@ -26,8 +26,9 @@ namespace MCCSliders
         public long metaMagic = 0;
         public Dictionary<int, item> items;
         public Dictionary<int, int> itemsConversion = new Dictionary<int, int>();
-        private long pointer = 0x1825B6D80; // mcc reach v1.1305.0.0, from xboxchaos/assembly
+        private long pointer = 0x0000000182607790; // reach 1.1377: 0x0000000182607790; mcc reach v1.1305.0.0 0x1825B6D80, from xboxchaos/assembly; this really needs to be setup properly to support both flights and retail
         private int previousSelectedWeaponIndex = -1;
+        private long point2 = 0; // 
 
         // keep a conversion dictionary between combobox and weapons list
         // key is combobox index
@@ -121,7 +122,7 @@ namespace MCCSliders
                 return false;
             }
 
-            var point2 = BitConverter.ToInt64(ReadMem(process, point1), 0); // read from memory
+            point2 = BitConverter.ToInt64(ReadMem(process, point1), 0); // read from memory
             if (point2 == 0)
             {
                 Log("ERROR: game is not running or EAC is enabled or player is in the menu. " +
@@ -131,20 +132,7 @@ namespace MCCSliders
             var point3 = point2 + MemMagicOffset;
             metaMagic = BitConverter.ToInt64(ReadMem(process, point3), 0); // read from memory
 
-            // get map name
-            var mapnameB = ReadMem(process, point2 + 0x1CC, 64);
-            var mapnameFull = "";
-            foreach (var a in mapnameB)
-            {
-                if (a == 0)
-                    break;
-                mapnameFull = $"{mapnameFull}{(char)a}";
-            }
-
-            var mapname = mapnameFull.Split("\\".ToCharArray()).Last();
-            currentMap = mapname;
-
-            Log($"Detected map {mapnameFull}; {mapname}");
+            GetMapName();
             return true;
         }
         public long ProcessModuleMemoryStream(Process process) // from XboxChaos Assembly on Github
@@ -500,9 +488,21 @@ namespace MCCSliders
         {
             if (checkBox_auto_apply.Checked)
             {
-                Button_reset_Click(null, null); // excessively slow and inefficient
-                if (previousSelectedWeaponIndex != -1)
-                    comboBox1.SelectedIndex = previousSelectedWeaponIndex;
+                var previousmapname = currentMap;
+                if (previousmapname == "")
+                    return;
+
+                GetMapName();
+
+                if (currentMap == null)
+                    return;
+
+                if (previousmapname != currentMap)
+                {
+                    Button_reset_Click(null, null); // excessively slow and inefficient
+                    if (previousSelectedWeaponIndex != -1)
+                        comboBox1.SelectedIndex = previousSelectedWeaponIndex;
+                }
             }
         }
 
@@ -522,6 +522,28 @@ namespace MCCSliders
         private void TrackBar_Z_MouseUp(object sender, MouseEventArgs e)
         {
             Button_writeToFile_Click(null, null); // current auto reload is severely flawed. Save the current config to file, to prevent being reset with the timed reload.
+
+        }
+
+        private void TrackBar_X_MouseHover(object sender, EventArgs e)
+        {
+        }
+
+        private void GetMapName()
+        {
+            // get map name
+            var mapnameB = ReadMem(process, point2 + 0x1CC, 64); // 64 no, check longest map name
+            var mapnameFull = "";
+            foreach (var a in mapnameB)
+            {
+                if (a == 0)
+                    break;
+                mapnameFull = $"{mapnameFull}{(char)a}";
+            }
+
+            currentMap = mapnameFull.Split("\\".ToCharArray()).Last();
+
+            Log($"Detected map {mapnameFull}; {currentMap}");
 
         }
     }
